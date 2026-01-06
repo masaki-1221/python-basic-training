@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part7: エラーと補足</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #1a1a1a;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #999999;
+            --pale-gray: #f5f5f5;
+            --white: #ffffff;
+            --off-white: #fafafa;
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-light: #fecaca;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 6rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--white);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--white) 0%, var(--off-white) 100%);
+        }
+
+        .slide.title-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .title-slide h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            position: relative;
+            color: var(--black);
+        }
+
+        .title-slide h1 span {
+            color: var(--red);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.5rem;
+            color: var(--medium-gray);
+            font-weight: 400;
+        }
+
+        /* Section Slide */
+        .slide.section-slide {
+            justify-content: center;
+            align-items: flex-start;
+            background: var(--off-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.section-slide::before {
+            content: '';
+            position: absolute;
+            right: -200px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 600px;
+            height: 600px;
+            background: var(--red);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+
+        .section-number {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--red);
+            line-height: 1;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section-slide h2 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--black);
+        }
+
+        /* Content Slide */
+        .slide h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slide h2::before {
+            content: '';
+            width: 6px;
+            height: 2.5rem;
+            background: var(--red);
+            border-radius: 3px;
+        }
+
+        .slide h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--medium-gray);
+        }
+
+        .slide p, .slide li {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--dark-gray);
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 1.5rem;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+        }
+
+        .slide li::marker {
+            color: var(--red);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--black);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--dark-gray);
+            position: relative;
+        }
+
+        pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: var(--light-gray);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #e5e5e5;
+        }
+
+        .code-inline {
+            background: var(--pale-gray);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--red-dark);
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #f472b6; }
+        .string { color: #86efac; }
+        .comment { color: #6b7280; font-style: italic; }
+        .function { color: #60a5fa; }
+        .number { color: #fbbf24; }
+        .operator { color: #e5e5e5; }
+        .bool { color: #c084fc; }
+        .error { color: #fca5a5; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--pale-gray);
+            color: var(--black);
+            font-weight: 700;
+        }
+
+        td {
+            color: var(--dark-gray);
+        }
+
+        tr:hover td {
+            background: var(--pale-gray);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: var(--pale-gray);
+            border-left: 4px solid var(--red);
+            padding: 1.5rem 2rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box p {
+            color: var(--dark-gray);
+        }
+
+        /* Demo Slide */
+        .slide.demo-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: var(--off-white);
+            position: relative;
+        }
+
+        .demo-slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(220, 38, 38, 0.03) 100px,
+                    rgba(220, 38, 38, 0.03) 101px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(220, 38, 38, 0.03) 100px,
+                    rgba(220, 38, 38, 0.03) 101px
+                );
+        }
+
+        .demo-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .demo-icon svg {
+            width: 60px;
+            height: 60px;
+            fill: var(--white);
+        }
+
+        .demo-slide h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+
+        .demo-slide h2::before {
+            display: none;
+        }
+
+        .demo-slide p {
+            font-size: 1.3rem;
+            color: var(--medium-gray);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .nav button {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: var(--black);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav button:hover {
+            background: var(--red);
+            border-color: var(--red);
+            color: var(--white);
+        }
+
+        /* Progress Bar */
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--red);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        /* Comparison Box */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-item {
+            background: var(--white);
+            border: 2px solid var(--dark-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .comparison-item.highlight {
+            border-color: var(--red);
+        }
+
+        .comparison-item h4 {
+            font-size: 1rem;
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-item pre {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .comparison-item pre code {
+            font-size: 1rem;
+        }
+
+        /* Try-Except Diagram */
+        .try-except-flow {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            align-items: stretch;
+        }
+
+        .flow-block {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .flow-block.try {
+            background: var(--pale-gray);
+            border: 2px solid var(--dark-gray);
+        }
+
+        .flow-block.except {
+            background: var(--red-light);
+            border: 2px solid var(--red);
+        }
+
+        .flow-block.else-block {
+            background: #dcfce7;
+            border: 2px solid #22c55e;
+        }
+
+        .flow-block.finally {
+            background: #e0e7ff;
+            border: 2px solid #6366f1;
+        }
+
+        .flow-block h5 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-block p {
+            font-size: 0.9rem;
+        }
+
+        /* Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .summary-item {
+            background: var(--white);
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .summary-item h4 {
+            font-size: 1rem;
+            color: var(--red);
+            margin-bottom: 0.3rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .summary-item p {
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+        }
+
+        /* Final Slide */
+        .slide.final-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 100%);
+        }
+
+        .final-slide h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .final-slide p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Course Summary Table */
+        .course-summary {
+            width: 100%;
+            margin: 1.5rem 0;
+        }
+
+        .course-summary th {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .course-summary td:first-child {
+            font-weight: 700;
+            color: var(--red);
+        }
+
+        /* Format Box */
+        .format-box {
+            background: var(--pale-gray);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        /* Next Steps */
+        .next-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .next-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--dark-gray);
+            border-radius: 8px;
+        }
+
+        .next-step .icon {
+            font-size: 1.5rem;
+        }
+
+        .next-step p {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progress"></div>
+    
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <h1>Part7: <span>エラーと補足</span></h1>
+            <p class="subtitle">エラー対策と便利な書き方を学ぼう</p>
+        </div>
+
+        <!-- Slide 2: Section 19 -->
+        <div class="slide section-slide">
+            <div class="section-number">19</div>
+            <h2>try-except</h2>
+        </div>
+
+        <!-- Slide 3: エラーとは -->
+        <div class="slide">
+            <h2>エラーとは</h2>
+            <ul>
+                <li>プログラム実行中に発生する問題</li>
+                <li>通常、エラーが発生するとプログラムが停止する</li>
+            </ul>
+            <pre><code><span class="comment"># エラーの例</span>
+result = <span class="number">10</span> / <span class="number">0</span>  <span class="comment"># ZeroDivisionError</span></code></pre>
+        </div>
+
+        <!-- Slide 4: try-exceptの基本 -->
+        <div class="slide">
+            <h2>try-exceptの基本</h2>
+            <div class="try-except-flow">
+                <div class="flow-block try">
+                    <h5>try</h5>
+                    <p>エラーが起きる<br>可能性のある処理</p>
+                </div>
+                <div class="flow-block except">
+                    <h5>except</h5>
+                    <p>エラー時の処理</p>
+                </div>
+            </div>
+            <pre><code><span class="keyword">try</span>:
+    result = <span class="number">10</span> / <span class="number">0</span>
+<span class="keyword">except</span>:
+    <span class="function">print</span>(<span class="string">'エラーが発生しました'</span>)
+
+<span class="function">print</span>(<span class="string">'処理を続行'</span>)  <span class="comment"># ← 実行される！</span></code></pre>
+        </div>
+
+        <!-- Slide 5: エラーの種類を指定 -->
+        <div class="slide">
+            <h2>エラーの種類を指定</h2>
+            <pre><code><span class="keyword">try</span>:
+    result = <span class="number">10</span> / <span class="number">0</span>
+<span class="keyword">except</span> <span class="error">ZeroDivisionError</span>:
+    <span class="function">print</span>(<span class="string">'0では割れません'</span>)</code></pre>
+            <div class="highlight-box">
+                <p>💡 特定のエラーだけを処理できる</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: よく見るエラーの種類 -->
+        <div class="slide">
+            <h2>よく見るエラーの種類</h2>
+            <table>
+                <tr>
+                    <th>エラー</th>
+                    <th>原因</th>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">ZeroDivisionError</code></td>
+                    <td>0で割り算</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">TypeError</code></td>
+                    <td>型が合わない操作</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">ValueError</code></td>
+                    <td>値が不正</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">KeyError</code></td>
+                    <td>辞書に存在しないキー</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">FileNotFoundError</code></td>
+                    <td>ファイルが見つからない</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">IndexError</code></td>
+                    <td>リストの範囲外</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 7: 複数のエラーを処理 -->
+        <div class="slide">
+            <h2>複数のエラーを処理</h2>
+            <pre><code><span class="keyword">try</span>:
+    value = <span class="function">int</span>(<span class="function">input</span>(<span class="string">'数字を入力: '</span>))
+    result = <span class="number">10</span> / value
+<span class="keyword">except</span> <span class="error">ValueError</span>:
+    <span class="function">print</span>(<span class="string">'数字を入力してください'</span>)
+<span class="keyword">except</span> <span class="error">ZeroDivisionError</span>:
+    <span class="function">print</span>(<span class="string">'0以外を入力してください'</span>)</code></pre>
+        </div>
+
+        <!-- Slide 8: elseとfinally -->
+        <div class="slide">
+            <h2>elseとfinally</h2>
+            <div class="try-except-flow">
+                <div class="flow-block try">
+                    <h5>try</h5>
+                    <p>試す処理</p>
+                </div>
+                <div class="flow-block except">
+                    <h5>except</h5>
+                    <p>エラー時</p>
+                </div>
+                <div class="flow-block else-block">
+                    <h5>else</h5>
+                    <p>成功時</p>
+                </div>
+                <div class="flow-block finally">
+                    <h5>finally</h5>
+                    <p>必ず実行</p>
+                </div>
+            </div>
+            <pre><code><span class="keyword">try</span>:
+    result = <span class="number">10</span> / <span class="number">2</span>
+<span class="keyword">except</span> <span class="error">ZeroDivisionError</span>:
+    <span class="function">print</span>(<span class="string">'エラー'</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">'成功'</span>)  <span class="comment"># エラーなしの場合</span>
+<span class="keyword">finally</span>:
+    <span class="function">print</span>(<span class="string">'終了'</span>)  <span class="comment"># 必ず実行</span></code></pre>
+        </div>
+
+        <!-- Slide 9: finallyの用途 -->
+        <div class="slide">
+            <h2>finallyの用途</h2>
+            <ul>
+                <li>ファイルを閉じる</li>
+                <li>接続を切断する</li>
+                <li>必ず実行したい後始末の処理</li>
+            </ul>
+            <pre><code><span class="keyword">try</span>:
+    file = <span class="function">open</span>(<span class="string">'data.txt'</span>)
+    <span class="comment"># 処理...</span>
+<span class="keyword">finally</span>:
+    file.<span class="function">close</span>()  <span class="comment"># 必ず閉じる</span></code></pre>
+        </div>
+
+        <!-- Slide 10: 生成AIコードでの活用 -->
+        <div class="slide">
+            <h2>生成AIコードでの活用</h2>
+            <p>try-exceptがよく使われる場面：</p>
+            <ul>
+                <li>ファイル操作</li>
+                <li>API呼び出し</li>
+                <li>ネットワーク処理</li>
+            </ul>
+            <div class="highlight-box">
+                <p>💡 <strong>エラーが起きる可能性がある処理</strong>にはtry-exceptがよく使われる</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>try-exceptを試してみましょう</p>
+        </div>
+
+        <!-- Slide 12: Section 20 -->
+        <div class="slide section-slide">
+            <div class="section-number">20</div>
+            <h2>紹介編（知っておくと便利な書き方）</h2>
+        </div>
+
+        <!-- Slide 13: この章の目的 -->
+        <div class="slide">
+            <h2>この章の目的</h2>
+            <ul>
+                <li>覚える必要はない</li>
+                <li><strong style="color: var(--red);">見かけたときに分かる</strong>ようにする</li>
+            </ul>
+            <div class="warning-box">
+                <p>💡 生成AIのコードでよく見る書き方を紹介します</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: リスト内包表記 -->
+        <div class="slide">
+            <h2>リスト内包表記</h2>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>通常のfor文</h4>
+                    <pre><code>numbers = []
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    numbers.<span class="function">append</span>(i * <span class="number">2</span>)</code></pre>
+                </div>
+                <div class="comparison-item highlight">
+                    <h4>リスト内包表記（1行）</h4>
+                    <pre><code>numbers = [i * <span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>)]</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: リスト内包表記（条件付き） -->
+        <div class="slide">
+            <h2>リスト内包表記（条件付き）</h2>
+            <pre><code><span class="comment"># 偶数だけのリスト</span>
+evens = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">10</span>) <span class="keyword">if</span> i % <span class="number">2</span> == <span class="number">0</span>]
+<span class="comment"># [0, 2, 4, 6, 8]</span></code></pre>
+            <div class="format-box">
+                [式 for 変数 in イテラブル if 条件]
+            </div>
+        </div>
+
+        <!-- Slide 16: 三項演算子 -->
+        <div class="slide">
+            <h2>三項演算子</h2>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>通常のif-else</h4>
+                    <pre><code><span class="keyword">if</span> score >= <span class="number">60</span>:
+    result = <span class="string">'合格'</span>
+<span class="keyword">else</span>:
+    result = <span class="string">'不合格'</span></code></pre>
+                </div>
+                <div class="comparison-item highlight">
+                    <h4>三項演算子（1行）</h4>
+                    <pre><code>result = <span class="string">'合格'</span> <span class="keyword">if</span> score >= <span class="number">60</span> <span class="keyword">else</span> <span class="string">'不合格'</span></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: 三項演算子の形式 -->
+        <div class="slide">
+            <h2>三項演算子の形式</h2>
+            <div class="format-box">
+                Trueの値 if 条件 else Falseの値
+            </div>
+            <div class="warning-box">
+                <p>💡 簡単な条件分岐を1行で書きたい場合に使用</p>
+            </div>
+        </div>
+
+        <!-- Slide 18: アンパック -->
+        <div class="slide">
+            <h2>アンパック</h2>
+            <p>リストやタプルの要素を複数の変数に代入</p>
+            <pre><code>point = (<span class="number">10</span>, <span class="number">20</span>)
+x, y = point  <span class="comment"># x=10, y=20</span>
+
+data = [<span class="string">'田中'</span>, <span class="number">30</span>, <span class="string">'東京'</span>]
+name, age, city = data</code></pre>
+        </div>
+
+        <!-- Slide 19: アンパック + for文 -->
+        <div class="slide">
+            <h2>アンパック + for文</h2>
+            <pre><code>points = [(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">5</span>, <span class="number">6</span>)]
+
+<span class="keyword">for</span> x, y <span class="keyword">in</span> points:
+    <span class="function">print</span>(<span class="string">f'x=</span><span class="keyword">{x}</span><span class="string">, y=</span><span class="keyword">{y}</span><span class="string">'</span>)</code></pre>
+        </div>
+
+        <!-- Slide 20: ラムダ式 -->
+        <div class="slide">
+            <h2>ラムダ式</h2>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>通常の関数</h4>
+                    <pre><code><span class="keyword">def</span> <span class="function">double</span>(x):
+    <span class="keyword">return</span> x * <span class="number">2</span></code></pre>
+                </div>
+                <div class="comparison-item highlight">
+                    <h4>ラムダ式（1行）</h4>
+                    <pre><code>double = <span class="keyword">lambda</span> x: x * <span class="number">2</span></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: ラムダ式の活用例 -->
+        <div class="slide">
+            <h2>ラムダ式の活用例</h2>
+            <pre><code><span class="comment"># sortedのキーとして使う</span>
+users = [(<span class="string">'田中'</span>, <span class="number">30</span>), (<span class="string">'山田'</span>, <span class="number">25</span>), (<span class="string">'佐藤'</span>, <span class="number">35</span>)]
+
+<span class="comment"># 年齢でソート</span>
+sorted_users = <span class="function">sorted</span>(users, key=<span class="keyword">lambda</span> u: u[<span class="number">1</span>])</code></pre>
+            <div class="warning-box">
+                <p>💡 一時的な簡単な関数を定義する場合に使用</p>
+            </div>
+        </div>
+
+        <!-- Slide 22: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>便利な書き方を試してみましょう</p>
+        </div>
+
+        <!-- Slide 23: Summary -->
+        <div class="slide">
+            <h2>Part7 まとめ</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h4>try-except</h4>
+                    <p>エラーを処理して続行</p>
+                </div>
+                <div class="summary-item">
+                    <h4>リスト内包表記</h4>
+                    <p>リストを1行で作成</p>
+                </div>
+                <div class="summary-item">
+                    <h4>三項演算子</h4>
+                    <p>if-elseを1行で</p>
+                </div>
+                <div class="summary-item">
+                    <h4>アンパック</h4>
+                    <p>複数変数への一括代入</p>
+                </div>
+                <div class="summary-item">
+                    <h4>ラムダ式</h4>
+                    <p>簡易的な関数定義</p>
+                </div>
+                <div class="summary-item">
+                    <h4>finally</h4>
+                    <p>必ず実行する処理</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 24: 研修完了 -->
+        <div class="slide title-slide">
+            <h1>Python基礎研修 <span>完了</span></h1>
+            <p class="subtitle">全7パートを学習しました</p>
+        </div>
+
+        <!-- Slide 25: 学んだこと -->
+        <div class="slide">
+            <h2>学んだこと</h2>
+            <table class="course-summary">
+                <tr>
+                    <th>Part</th>
+                    <th>内容</th>
+                </tr>
+                <tr>
+                    <td>Part1</td>
+                    <td>print, コメント, 数値, 文字列, 変数, 型</td>
+                </tr>
+                <tr>
+                    <td>Part2</td>
+                    <td>リスト, 辞書, タプル</td>
+                </tr>
+                <tr>
+                    <td>Part3</td>
+                    <td>比較演算子, 論理演算子, None, if文</td>
+                </tr>
+                <tr>
+                    <td>Part4</td>
+                    <td>for文, while文, break, continue</td>
+                </tr>
+                <tr>
+                    <td>Part5</td>
+                    <td>関数, 引数, 戻り値, Docstring</td>
+                </tr>
+                <tr>
+                    <td>Part6</td>
+                    <td>import, 組み込み関数, ライブラリ</td>
+                </tr>
+                <tr>
+                    <td>Part7</td>
+                    <td>try-except, 便利な書き方</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 26: これからの学習 -->
+        <div class="slide">
+            <h2>これからの学習</h2>
+            <div class="next-steps">
+                <div class="next-step">
+                    <div class="icon">📖</div>
+                    <p>生成AIが作るコードの<strong style="color: var(--red);">7割程度</strong>は読めるはず</p>
+                </div>
+                <div class="next-step">
+                    <div class="icon">💬</div>
+                    <p>分からない部分は<strong style="color: var(--red);">生成AIに質問</strong></p>
+                </div>
+                <div class="next-step">
+                    <div class="icon">🔄</div>
+                    <p>コードを<strong style="color: var(--red);">読む経験</strong>を積んでいく</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 27: Final -->
+        <div class="slide final-slide">
+            <h1>お疲れ様でした</h1>
+            <p>Python基礎研修 修了</p>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">27</span>
+    </div>
+
+    <div class="nav">
+        <button id="prev">◀</button>
+        <button id="next">▶</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const currentSpan = document.getElementById('current');
+        const totalSpan = document.getElementById('total');
+        let currentSlide = 0;
+
+        totalSpan.textContent = slides.length;
+
+        function showSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= slides.length) index = slides.length - 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+            
+            // Update progress
+            const progressWidth = ((index + 1) / slides.length) * 100;
+            progress.style.width = progressWidth + '%';
+            
+            // Update counter
+            currentSpan.textContent = index + 1;
+        }
+
+        document.getElementById('prev').addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    showSlide(currentSlide + 1);
+                } else {
+                    showSlide(currentSlide - 1);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part4: ループ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #1a1a1a;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #999999;
+            --pale-gray: #f5f5f5;
+            --white: #ffffff;
+            --off-white: #fafafa;
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-light: #fecaca;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 6rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--white);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--white) 0%, var(--off-white) 100%);
+        }
+
+        .slide.title-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .title-slide h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            position: relative;
+            color: var(--black);
+        }
+
+        .title-slide h1 span {
+            color: var(--red);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.5rem;
+            color: var(--medium-gray);
+            font-weight: 400;
+        }
+
+        /* Section Slide */
+        .slide.section-slide {
+            justify-content: center;
+            align-items: flex-start;
+            background: var(--off-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.section-slide::before {
+            content: '';
+            position: absolute;
+            right: -200px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 600px;
+            height: 600px;
+            background: var(--red);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+
+        .section-number {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--red);
+            line-height: 1;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section-slide h2 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--black);
+        }
+
+        /* Content Slide */
+        .slide h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slide h2::before {
+            content: '';
+            width: 6px;
+            height: 2.5rem;
+            background: var(--red);
+            border-radius: 3px;
+        }
+
+        .slide h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--dark-gray);
+        }
+
+        .slide p, .slide li {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--dark-gray);
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 1.5rem;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+        }
+
+        .slide li::marker {
+            color: var(--red);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--black);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--dark-gray);
+            position: relative;
+        }
+
+        pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: var(--light-gray);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #e5e5e5;
+        }
+
+        .code-inline {
+            background: var(--pale-gray);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--red-dark);
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #f472b6; }
+        .string { color: #86efac; }
+        .comment { color: #6b7280; font-style: italic; }
+        .function { color: #60a5fa; }
+        .number { color: #fbbf24; }
+        .operator { color: #e5e5e5; }
+        .bool { color: #c084fc; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--pale-gray);
+            color: var(--black);
+            font-weight: 700;
+        }
+
+        td {
+            color: var(--dark-gray);
+        }
+
+        tr:hover td {
+            background: var(--pale-gray);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: var(--pale-gray);
+            border-left: 4px solid var(--red);
+            padding: 1.5rem 2rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box p {
+            color: var(--dark-gray);
+        }
+
+        /* Demo Slide */
+        .slide.demo-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: var(--off-white);
+            position: relative;
+        }
+
+        .demo-slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(220, 38, 38, 0.03) 100px,
+                    rgba(220, 38, 38, 0.03) 101px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(220, 38, 38, 0.03) 100px,
+                    rgba(220, 38, 38, 0.03) 101px
+                );
+        }
+
+        .demo-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .demo-icon svg {
+            width: 60px;
+            height: 60px;
+            fill: var(--white);
+        }
+
+        .demo-slide h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+
+        .demo-slide h2::before {
+            display: none;
+        }
+
+        .demo-slide p {
+            font-size: 1.3rem;
+            color: var(--medium-gray);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .nav button {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: var(--black);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav button:hover {
+            background: var(--red);
+            border-color: var(--red);
+            color: var(--white);
+        }
+
+        /* Progress Bar */
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--red);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        /* Next Preview */
+        .next-preview {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid #ddd;
+        }
+
+        .next-preview h3 {
+            color: var(--red);
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .next-preview ul {
+            columns: 2;
+            column-gap: 3rem;
+        }
+
+        .next-preview li {
+            color: var(--dark-gray);
+        }
+
+        /* Output Box */
+        .output-box {
+            background: var(--pale-gray);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--dark-gray);
+        }
+
+        .output-box .label {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Loop Diagram */
+        .loop-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .loop-arrow {
+            width: 200px;
+            height: 100px;
+            border: 3px solid var(--red);
+            border-radius: 50px;
+            position: relative;
+        }
+
+        .loop-arrow::after {
+            content: '→';
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--red);
+        }
+
+        .loop-box {
+            background: var(--white);
+            border: 2px solid var(--dark-gray);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+        }
+
+        /* Break/Continue Diagram */
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .flow-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .flow-box {
+            background: var(--white);
+            border: 2px solid var(--dark-gray);
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .flow-box.active {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
+
+        .flow-box.skip {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .flow-arrow {
+            color: var(--red);
+            font-size: 1.5rem;
+        }
+
+        /* Range Visual */
+        .range-visual {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .range-item {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--red);
+            color: var(--white);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .range-item.excluded {
+            background: var(--pale-gray);
+            color: var(--light-gray);
+            border: 2px dashed var(--light-gray);
+        }
+
+        /* Comparison Cards */
+        .comparison-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-card {
+            background: var(--white);
+            border: 2px solid var(--dark-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .comparison-card h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--red);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-card p {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progress"></div>
+    
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <h1>Part4: <span>ループ</span></h1>
+            <p class="subtitle">繰り返し処理をマスターしよう</p>
+        </div>
+
+        <!-- Slide 2: Section 11 -->
+        <div class="slide section-slide">
+            <div class="section-number">11</div>
+            <h2>for文とrange</h2>
+        </div>
+
+        <!-- Slide 3: for文とは -->
+        <div class="slide">
+            <h2>for文とは</h2>
+            <ul>
+                <li>同じ処理を<strong style="color: var(--red);">繰り返す</strong>仕組み</li>
+                <li>リストや文字列の要素を<strong style="color: var(--red);">1つずつ処理</strong></li>
+            </ul>
+            <pre><code><span class="keyword">for</span> 変数 <span class="keyword">in</span> 繰り返す対象:
+    処理</code></pre>
+        </div>
+
+        <!-- Slide 4: for文の基本 -->
+        <div class="slide">
+            <h2>for文の基本</h2>
+            <div class="two-column">
+                <div>
+                    <pre><code>fruits = [<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'orange'</span>]
+
+<span class="keyword">for</span> fruit <span class="keyword">in</span> fruits:
+    <span class="function">print</span>(fruit)</code></pre>
+                </div>
+                <div>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        apple<br>
+                        banana<br>
+                        orange
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: range関数 -->
+        <div class="slide">
+            <h2>range関数</h2>
+            <p>指定した回数だけ繰り返します</p>
+            <table>
+                <tr>
+                    <th>書き方</th>
+                    <th>意味</th>
+                    <th>生成される数</th>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">range(5)</code></td>
+                    <td>0から4まで</td>
+                    <td>0, 1, 2, 3, 4</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">range(1, 6)</code></td>
+                    <td>1から5まで</td>
+                    <td>1, 2, 3, 4, 5</td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">range(0, 10, 2)</code></td>
+                    <td>0から8まで2刻み</td>
+                    <td>0, 2, 4, 6, 8</td>
+                </tr>
+            </table>
+            <div class="warning-box">
+                <p>⚠️ 終了値は含まれない！</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: range関数の視覚化 -->
+        <div class="slide">
+            <h2>range(5) の中身</h2>
+            <p><code class="code-inline">range(5)</code> は 0 から 4 まで（5は含まない）</p>
+            <div class="range-visual">
+                <div class="range-item">0</div>
+                <div class="range-item">1</div>
+                <div class="range-item">2</div>
+                <div class="range-item">3</div>
+                <div class="range-item">4</div>
+                <div class="range-item excluded">5</div>
+            </div>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="function">print</span>(i)   <span class="comment"># 0, 1, 2, 3, 4</span></code></pre>
+        </div>
+
+        <!-- Slide 7: range関数の使用例 -->
+        <div class="slide">
+            <h2>range関数の使用例</h2>
+            <div class="two-column">
+                <div>
+                    <pre><code><span class="comment"># 5回繰り返す</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="function">print</span>(i)</code></pre>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        0<br>1<br>2<br>3<br>4
+                    </div>
+                </div>
+                <div>
+                    <pre><code><span class="comment"># 1から5まで</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="number">6</span>):
+    <span class="function">print</span>(i)</code></pre>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        1<br>2<br>3<br>4<br>5
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: enumerate関数 -->
+        <div class="slide">
+            <h2>enumerate関数</h2>
+            <p><strong style="color: var(--red);">インデックス</strong>と<strong style="color: var(--red);">要素</strong>を同時に取得</p>
+            <div class="two-column">
+                <div>
+                    <pre><code>fruits = [<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'orange'</span>]
+
+<span class="keyword">for</span> i, fruit <span class="keyword">in</span> <span class="function">enumerate</span>(fruits):
+    <span class="function">print</span>(<span class="string">f'</span><span class="keyword">{i}</span><span class="string">: </span><span class="keyword">{fruit}</span><span class="string">'</span>)</code></pre>
+                </div>
+                <div>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        0: apple<br>
+                        1: banana<br>
+                        2: orange
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: 辞書のループ -->
+        <div class="slide">
+            <h2>辞書のループ</h2>
+            <pre><code>user = {<span class="string">'name'</span>: <span class="string">'山田'</span>, <span class="string">'age'</span>: <span class="number">25</span>}
+
+<span class="comment"># キーだけ</span>
+<span class="keyword">for</span> key <span class="keyword">in</span> user:
+    <span class="function">print</span>(key)
+
+<span class="comment"># キーと値を同時に</span>
+<span class="keyword">for</span> key, value <span class="keyword">in</span> user.<span class="function">items</span>():
+    <span class="function">print</span>(<span class="string">f'</span><span class="keyword">{key}</span><span class="string">: </span><span class="keyword">{value}</span><span class="string">'</span>)</code></pre>
+        </div>
+
+        <!-- Slide 10: ネスト -->
+        <div class="slide">
+            <h2>ネスト（入れ子）</h2>
+            <pre><code><span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="number">4</span>):
+    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="number">4</span>):
+        <span class="function">print</span>(<span class="string">f'</span><span class="keyword">{i}</span><span class="string"> x </span><span class="keyword">{j}</span><span class="string"> = </span><span class="keyword">{i * j}</span><span class="string">'</span>)</code></pre>
+            <div class="warning-box">
+                <p>⚠️ 注意：ネストすると処理回数が急増！（3×3=9回の処理）</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>for文とrangeを実際に試してみましょう</p>
+        </div>
+
+        <!-- Slide 12: Section 12 -->
+        <div class="slide section-slide">
+            <div class="section-number">12</div>
+            <h2>while文</h2>
+        </div>
+
+        <!-- Slide 13: while文とは -->
+        <div class="slide">
+            <h2>while文とは</h2>
+            <ul>
+                <li>条件が <strong style="color: var(--red);">True の間</strong> 繰り返す</li>
+                <li>繰り返す回数が決まっていない場合に使う</li>
+            </ul>
+            <pre><code><span class="keyword">while</span> 条件:
+    処理</code></pre>
+        </div>
+
+        <!-- Slide 14: while文の基本 -->
+        <div class="slide">
+            <h2>while文の基本</h2>
+            <div class="two-column">
+                <div>
+                    <pre><code>count = <span class="number">0</span>
+
+<span class="keyword">while</span> count < <span class="number">5</span>:
+    <span class="function">print</span>(count)
+    count += <span class="number">1</span>   <span class="comment"># カウントを増やす</span></code></pre>
+                </div>
+                <div>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        0<br>1<br>2<br>3<br>4
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: 無限ループに注意 -->
+        <div class="slide">
+            <h2>無限ループに注意！</h2>
+            <pre><code>count = <span class="number">0</span>
+
+<span class="keyword">while</span> count < <span class="number">5</span>:
+    <span class="function">print</span>(count)
+    <span class="comment"># count += 1 を忘れると...</span>
+    <span class="comment"># 永遠に止まらない！</span></code></pre>
+            <div class="highlight-box">
+                <p>⚠️ 無限ループになったら強制終了（Ctrl+C）が必要</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: for文とwhile文の使い分け -->
+        <div class="slide">
+            <h2>for文とwhile文の使い分け</h2>
+            <div class="comparison-cards">
+                <div class="comparison-card">
+                    <h4>for文</h4>
+                    <p>回数が<strong>決まっている</strong></p>
+                    <p>例：リストの全要素を処理</p>
+                    <p>頻度：<strong>よく使う</strong></p>
+                </div>
+                <div class="comparison-card">
+                    <h4>while文</h4>
+                    <p>回数が<strong>決まっていない</strong></p>
+                    <p>例：条件が満たされるまで</p>
+                    <p>頻度：たまに使う</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>while文を試してみましょう</p>
+        </div>
+
+        <!-- Slide 18: Section 13 -->
+        <div class="slide section-slide">
+            <div class="section-number">13</div>
+            <h2>breakとcontinue</h2>
+        </div>
+
+        <!-- Slide 19: ループの流れを制御 -->
+        <div class="slide">
+            <h2>ループの流れを制御</h2>
+            <table>
+                <tr>
+                    <th>キーワード</th>
+                    <th>動作</th>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">break</code></td>
+                    <td>ループを<strong style="color: var(--red);">終了</strong></td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">continue</code></td>
+                    <td>今回だけ<strong style="color: var(--red);">スキップ</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 20: break -->
+        <div class="slide">
+            <h2>break</h2>
+            <p>ループを<strong style="color: var(--red);">途中で終了</strong>させる</p>
+            <div class="two-column">
+                <div>
+                    <pre><code>fruits = [<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'orange'</span>]
+
+<span class="keyword">for</span> fruit <span class="keyword">in</span> fruits:
+    <span class="keyword">if</span> fruit == <span class="string">'banana'</span>:
+        <span class="function">print</span>(<span class="string">'見つかった！'</span>)
+        <span class="keyword">break</span>   <span class="comment"># ここでループ終了</span>
+    <span class="function">print</span>(fruit)</code></pre>
+                </div>
+                <div>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        apple<br>
+                        見つかった！
+                    </div>
+                    <p style="font-size: 1rem; margin-top: 1rem;">※ orange は処理されない</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: continue -->
+        <div class="slide">
+            <h2>continue</h2>
+            <p><strong style="color: var(--red);">今回だけスキップ</strong>して次へ</p>
+            <div class="two-column">
+                <div>
+                    <pre><code><span class="keyword">for</span> num <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="number">6</span>):
+    <span class="keyword">if</span> num == <span class="number">3</span>:
+        <span class="keyword">continue</span>   <span class="comment"># 3はスキップ</span>
+    <span class="function">print</span>(num)</code></pre>
+                </div>
+                <div>
+                    <div class="output-box">
+                        <div class="label">出力</div>
+                        1<br>2<br>4<br>5
+                    </div>
+                    <p style="font-size: 1rem; margin-top: 1rem;">※ 3 だけスキップされる</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: breakとcontinueの違い -->
+        <div class="slide">
+            <h2>breakとcontinueの違い</h2>
+            <div class="two-column">
+                <div>
+                    <h3>break（終了）</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-item">
+                            <div class="flow-box">0</div>
+                            <div class="flow-box">1</div>
+                            <div class="flow-box">2</div>
+                            <div class="flow-box active">3 break!</div>
+                            <div class="flow-box skip">4</div>
+                        </div>
+                    </div>
+                    <pre><code><span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="keyword">if</span> i == <span class="number">3</span>:
+        <span class="keyword">break</span>
+<span class="comment"># 0, 1, 2 で終了</span></code></pre>
+                </div>
+                <div>
+                    <h3>continue（スキップ）</h3>
+                    <div class="flow-diagram">
+                        <div class="flow-item">
+                            <div class="flow-box">0</div>
+                            <div class="flow-box">1</div>
+                            <div class="flow-box">2</div>
+                            <div class="flow-box skip">3</div>
+                            <div class="flow-box">4</div>
+                        </div>
+                    </div>
+                    <pre><code><span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="keyword">if</span> i == <span class="number">3</span>:
+        <span class="keyword">continue</span>
+<span class="comment"># 0, 1, 2, 4</span></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23: while True + break パターン -->
+        <div class="slide">
+            <h2>while True + break パターン</h2>
+            <pre><code>count = <span class="number">0</span>
+
+<span class="keyword">while</span> <span class="bool">True</span>:   <span class="comment"># 無限ループ</span>
+    <span class="function">print</span>(count)
+    count += <span class="number">1</span>
+    <span class="keyword">if</span> count >= <span class="number">5</span>:
+        <span class="keyword">break</span>   <span class="comment"># 条件を満たしたら終了</span></code></pre>
+            <div class="highlight-box">
+                <p>💡 生成AIのコードでよく見るパターンです！</p>
+            </div>
+        </div>
+
+        <!-- Slide 24: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>breakとcontinueを試してみましょう</p>
+        </div>
+
+        <!-- Slide 25: Summary -->
+        <div class="slide">
+            <h2>Part4 まとめ</h2>
+            <table>
+                <tr>
+                    <th>トピック</th>
+                    <th>ポイント</th>
+                </tr>
+                <tr>
+                    <td>for文</td>
+                    <td>リストや回数を指定して繰り返す</td>
+                </tr>
+                <tr>
+                    <td>range</td>
+                    <td><code class="code-inline">range(5)</code> → 0から4まで</td>
+                </tr>
+                <tr>
+                    <td>enumerate</td>
+                    <td>インデックスと要素を同時に取得</td>
+                </tr>
+                <tr>
+                    <td>while文</td>
+                    <td>条件がTrueの間繰り返す</td>
+                </tr>
+                <tr>
+                    <td>break</td>
+                    <td>ループを終了</td>
+                </tr>
+                <tr>
+                    <td>continue</td>
+                    <td>今回だけスキップ</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 26: Next Preview -->
+        <div class="slide title-slide">
+            <h1>次回予告</h1>
+            <p class="subtitle" style="font-size: 2rem; color: var(--black); margin-bottom: 2rem;">Part5: 関数</p>
+            <div class="next-preview" style="text-align: left; max-width: 500px;">
+                <h3 style="margin-top: 0;">学習内容</h3>
+                <ul style="columns: 1;">
+                    <li>関数の基本</li>
+                    <li>引数と戻り値</li>
+                    <li>デフォルト引数</li>
+                    <li>Docstring</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">26</span>
+    </div>
+
+    <div class="nav">
+        <button id="prev">◀</button>
+        <button id="next">▶</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const currentSpan = document.getElementById('current');
+        const totalSpan = document.getElementById('total');
+        let currentSlide = 0;
+
+        totalSpan.textContent = slides.length;
+
+        function showSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= slides.length) index = slides.length - 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+            
+            // Update progress
+            const progressWidth = ((index + 1) / slides.length) * 100;
+            progress.style.width = progressWidth + '%';
+            
+            // Update counter
+            currentSpan.textContent = index + 1;
+        }
+
+        document.getElementById('prev').addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    showSlide(currentSlide + 1);
+                } else {
+                    showSlide(currentSlide - 1);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part1: Python基礎</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #1a1a1a;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #999999;
+            --pale-gray: #f5f5f5;
+            --white: #ffffff;
+            --off-white: #fafafa;
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-light: #fecaca;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 6rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--white);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--white) 0%, var(--off-white) 100%);
+        }
+
+        .slide.title-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .title-slide h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .title-slide h1 span {
+            color: var(--red);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.5rem;
+            color: var(--light-gray);
+            font-weight: 400;
+        }
+
+        /* Section Slide */
+        .slide.section-slide {
+            justify-content: center;
+            align-items: flex-start;
+            background: var(--off-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.section-slide::before {
+            content: '';
+            position: absolute;
+            right: -200px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 600px;
+            height: 600px;
+            background: var(--red);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+
+        .section-number {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--red);
+            line-height: 1;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section-slide h2 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--black);
+        }
+
+        /* Content Slide */
+        .slide h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slide h2::before {
+            content: '';
+            width: 6px;
+            height: 2.5rem;
+            background: var(--red);
+            border-radius: 3px;
+        }
+
+        .slide h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--dark-gray);
+        }
+
+        .slide p, .slide li {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--dark-gray);
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 1.5rem;
+        }
+
+        .slide li {
+            margin-bottom: 0.8rem;
+        }
+
+        .slide li::marker {
+            color: var(--red);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--black);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--dark-gray);
+            position: relative;
+        }
+
+        pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: var(--light-gray);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #e5e5e5;
+        }
+
+        .code-inline {
+            background: var(--pale-gray);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--red-dark);
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #f472b6; }
+        .string { color: #86efac; }
+        .comment { color: #6b7280; font-style: italic; }
+        .function { color: #60a5fa; }
+        .number { color: #fbbf24; }
+        .operator { color: var(--pale-gray); }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--pale-gray);
+            color: var(--black);
+            font-weight: 700;
+        }
+
+        td {
+            color: var(--dark-gray);
+        }
+
+        tr:hover td {
+            background: var(--pale-gray);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: var(--pale-gray);
+            border-left: 4px solid var(--red);
+            padding: 1.5rem 2rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box p {
+            color: var(--dark-gray);
+        }
+
+        /* Index Table */
+        .index-table {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .index-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .index-cell .char {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            border: 2px solid var(--dark-gray);
+            font-size: 1.8rem;
+            color: var(--black);
+        }
+
+        .index-cell .num {
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--red);
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        /* Demo Slide */
+        .slide.demo-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: var(--off-white);
+            position: relative;
+        }
+
+        .demo-slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(220, 38, 38, 0.03) 100px,
+                    rgba(220, 38, 38, 0.03) 101px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(220, 38, 38, 0.03) 100px,
+                    rgba(220, 38, 38, 0.03) 101px
+                );
+        }
+
+        .demo-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .demo-icon svg {
+            width: 60px;
+            height: 60px;
+            fill: var(--white);
+        }
+
+        .demo-slide h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--black);
+        }
+
+        .demo-slide h2::before {
+            display: none;
+        }
+
+        .demo-slide p {
+            font-size: 1.3rem;
+            color: var(--medium-gray);
+        }
+
+        /* Summary Slide */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s;
+        }
+
+        .summary-item:hover {
+            border-color: var(--red);
+        }
+
+        .summary-item h4 {
+            font-size: 1.2rem;
+            color: var(--red);
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .summary-item p {
+            font-size: 1rem;
+            color: var(--dark-gray);
+        }
+
+        /* Diagram: Variable Box */
+        .variable-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .var-box {
+            width: 150px;
+            height: 100px;
+            background: var(--white);
+            border: 3px solid var(--red);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .var-box .label {
+            position: absolute;
+            top: -1.5rem;
+            background: var(--red);
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--white);
+        }
+
+        .var-box .value {
+            font-size: 1.8rem;
+            color: var(--black);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: var(--red);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .nav button {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: var(--black);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav button:hover {
+            background: var(--red);
+            border-color: var(--red);
+            color: var(--white);
+        }
+
+        /* Progress Bar */
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--red);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        /* Type Diagram */
+        .type-diagram {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .type-card {
+            background: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            min-width: 140px;
+        }
+
+        .type-card .type-name {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--red);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .type-card .type-desc {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .type-card .type-example {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--dark-gray);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Next Preview */
+        .next-preview {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid #ddd;
+        }
+
+        .next-preview h3 {
+            color: var(--red);
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .next-preview ul {
+            columns: 2;
+            column-gap: 3rem;
+        }
+
+        .next-preview li {
+            color: var(--dark-gray);
+        }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progress"></div>
+    
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <h1>Part1: <span>Python</span>基礎</h1>
+            <p class="subtitle">プログラミングの第一歩を踏み出そう</p>
+        </div>
+
+        <!-- Slide 2: Section 01 -->
+        <div class="slide section-slide">
+            <div class="section-number">01</div>
+            <h2>printとコメント</h2>
+        </div>
+
+        <!-- Slide 3: print関数とは -->
+        <div class="slide">
+            <h2>print関数とは</h2>
+            <p>文字を画面に出力する関数です。<br>Pythonの最も基本的な機能のひとつです。</p>
+            <pre><code><span class="function">print</span>(<span class="string">'Hello World'</span>)</code></pre>
+            <div class="highlight-box">
+                <p>💡 プログラムの動作確認やデバッグにも頻繁に使います</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: 文字列のルール -->
+        <div class="slide">
+            <h2>文字列のルール</h2>
+            <ul>
+                <li>シングルクォーテーション <code class="code-inline">'</code> またはダブルクォーテーション <code class="code-inline">"</code> で囲む</li>
+                <li>どちらを使ってもOK</li>
+                <li><strong style="color: var(--red);">囲まないとエラーになる</strong></li>
+            </ul>
+            <pre><code><span class="function">print</span>(<span class="string">'Hello'</span>)  <span class="comment"># OK</span>
+<span class="function">print</span>(<span class="string">"Hello"</span>)  <span class="comment"># OK</span>
+<span class="function">print</span>(Hello)    <span class="comment"># エラー！</span></code></pre>
+        </div>
+
+        <!-- Slide 5: コメント -->
+        <div class="slide">
+            <h2>コメント</h2>
+            <p>行の先頭に <code class="code-inline">#</code> を付けると、その行は実行されません。</p>
+            <h3>用途</h3>
+            <ul>
+                <li>コードの説明を書く</li>
+                <li>一時的に処理を無効にする</li>
+            </ul>
+            <pre><code><span class="comment"># これはコメント（実行されない）</span>
+<span class="function">print</span>(<span class="string">'Hello'</span>)  <span class="comment"># この部分もコメント</span></code></pre>
+        </div>
+
+        <!-- Slide 6: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>printとコメントを実際に書いてみましょう</p>
+        </div>
+
+        <!-- Slide 7: Section 02 -->
+        <div class="slide section-slide">
+            <div class="section-number">02</div>
+            <h2>数値と四則演算</h2>
+        </div>
+
+        <!-- Slide 8: 数値の特徴 -->
+        <div class="slide">
+            <h2>数値の特徴</h2>
+            <ul>
+                <li>クォーテーションで囲む必要がない</li>
+                <li>そのまま計算に使える</li>
+            </ul>
+            <pre><code><span class="function">print</span>(<span class="number">3</span>)      <span class="comment"># 数値の3</span>
+<span class="function">print</span>(<span class="string">'3'</span>)    <span class="comment"># 文字列の3（違うもの！）</span></code></pre>
+            <div class="warning-box">
+                <p>⚠️ 数値と文字列は見た目が似ていても、Pythonにとっては別物です</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: 四則演算 -->
+        <div class="slide">
+            <h2>四則演算</h2>
+            <table>
+                <tr>
+                    <th>演算</th>
+                    <th>記号</th>
+                    <th>例</th>
+                    <th>結果</th>
+                </tr>
+                <tr>
+                    <td>足し算</td>
+                    <td><code class="code-inline">+</code></td>
+                    <td><code class="code-inline">3 + 7</code></td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>引き算</td>
+                    <td><code class="code-inline">-</code></td>
+                    <td><code class="code-inline">7 - 3</code></td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>掛け算</td>
+                    <td><code class="code-inline">*</code></td>
+                    <td><code class="code-inline">3 * 7</code></td>
+                    <td>21</td>
+                </tr>
+                <tr>
+                    <td>割り算</td>
+                    <td><code class="code-inline">/</code></td>
+                    <td><code class="code-inline">6 / 2</code></td>
+                    <td>3.0</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 10: その他の演算 -->
+        <div class="slide">
+            <h2>その他の演算</h2>
+            <table>
+                <tr>
+                    <th>演算</th>
+                    <th>記号</th>
+                    <th>例</th>
+                    <th>結果</th>
+                </tr>
+                <tr>
+                    <td>余り</td>
+                    <td><code class="code-inline">%</code></td>
+                    <td><code class="code-inline">7 % 3</code></td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>切り捨て除算</td>
+                    <td><code class="code-inline">//</code></td>
+                    <td><code class="code-inline">7 // 3</code></td>
+                    <td>2</td>
+                </tr>
+            </table>
+            <div class="highlight-box">
+                <p>💡 余り（%）は「偶数・奇数の判定」などでよく使います</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: 注意点 -->
+        <div class="slide">
+            <h2>演算の注意点</h2>
+            <ul>
+                <li><strong style="color: var(--red);">全角文字はNG</strong>（プログラム部分は半角で書く）</li>
+                <li>クォーテーションで囲むと文字列になる</li>
+            </ul>
+            <pre><code><span class="function">print</span>(<span class="number">3</span> <span class="operator">+</span> <span class="number">7</span>)    <span class="comment"># 計算される → 10</span>
+<span class="function">print</span>(<span class="string">'3 + 7'</span>)  <span class="comment"># 文字列 → "3 + 7"</span></code></pre>
+        </div>
+
+        <!-- Slide 12: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>数値と四則演算を実際に試してみましょう</p>
+        </div>
+
+        <!-- Slide 13: Section 03 -->
+        <div class="slide section-slide">
+            <div class="section-number">03</div>
+            <h2>文字列</h2>
+        </div>
+
+        <!-- Slide 14: 文字列の結合 -->
+        <div class="slide">
+            <h2>文字列の結合と繰り返し</h2>
+            <ul>
+                <li><code class="code-inline">+</code> で文字列同士を結合できる</li>
+                <li><code class="code-inline">*</code> で文字列を繰り返せる</li>
+            </ul>
+            <pre><code><span class="string">'Hello'</span> <span class="operator">+</span> <span class="string">'World'</span>  <span class="comment"># HelloWorld</span>
+<span class="string">'Python'</span> <span class="operator">*</span> <span class="number">3</span>       <span class="comment"># PythonPythonPython</span></code></pre>
+        </div>
+
+        <!-- Slide 15: インデックス -->
+        <div class="slide">
+            <h2>インデックス</h2>
+            <p>文字列から特定の位置の文字を取り出せます。</p>
+            <div class="warning-box">
+                <p>⚠️ <strong>位置は0から数える</strong>（これ重要！）</p>
+            </div>
+            <div class="index-table">
+                <div class="index-cell"><div class="char">P</div><div class="num">0</div></div>
+                <div class="index-cell"><div class="char">y</div><div class="num">1</div></div>
+                <div class="index-cell"><div class="char">t</div><div class="num">2</div></div>
+                <div class="index-cell"><div class="char">h</div><div class="num">3</div></div>
+                <div class="index-cell"><div class="char">o</div><div class="num">4</div></div>
+                <div class="index-cell"><div class="char">n</div><div class="num">5</div></div>
+            </div>
+            <pre><code>text = <span class="string">'Python'</span>
+text[<span class="number">0</span>]   <span class="comment"># P</span>
+text[<span class="number">1</span>]   <span class="comment"># y</span>
+text[<span class="number">-1</span>]  <span class="comment"># n（後ろから1番目）</span></code></pre>
+        </div>
+
+        <!-- Slide 16: スライス -->
+        <div class="slide">
+            <h2>スライス</h2>
+            <p>文字列の一部分を切り出せます。</p>
+            <ul>
+                <li><code class="code-inline">[開始:終了]</code> の形式で指定</li>
+                <li><strong style="color: var(--red);">終了位置の文字は含まれない</strong></li>
+            </ul>
+            <pre><code>text = <span class="string">'Python'</span>
+text[<span class="number">0</span>:<span class="number">3</span>]   <span class="comment"># Pyt（0, 1, 2番目）</span>
+text[:<span class="number">3</span>]    <span class="comment"># Pyt（最初から）</span>
+text[<span class="number">3</span>:]    <span class="comment"># hon（最後まで）</span></code></pre>
+        </div>
+
+        <!-- Slide 17: 文字列メソッド -->
+        <div class="slide">
+            <h2>文字列メソッド</h2>
+            <table>
+                <tr>
+                    <th>メソッド</th>
+                    <th>機能</th>
+                    <th>例</th>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">.upper()</code></td>
+                    <td>大文字に変換</td>
+                    <td><code class="code-inline">'hello'.upper()</code> → <code class="code-inline">'HELLO'</code></td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">.lower()</code></td>
+                    <td>小文字に変換</td>
+                    <td><code class="code-inline">'HELLO'.lower()</code> → <code class="code-inline">'hello'</code></td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">.strip()</code></td>
+                    <td>前後の空白を削除</td>
+                    <td><code class="code-inline">'  hi  '.strip()</code> → <code class="code-inline">'hi'</code></td>
+                </tr>
+                <tr>
+                    <td><code class="code-inline">.replace()</code></td>
+                    <td>置換</td>
+                    <td><code class="code-inline">'Hello'.replace('H','J')</code> → <code class="code-inline">'Jello'</code></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 18: f-strings -->
+        <div class="slide">
+            <h2>f-strings（推奨）</h2>
+            <p>文字列の中に変数を埋め込む便利な書き方です。<br>文字列の前に <code class="code-inline">f</code> を付けます。</p>
+            <pre><code>name = <span class="string">'山田'</span>
+age = <span class="number">25</span>
+<span class="function">print</span>(<span class="string">f'私は</span><span class="keyword">{name}</span><span class="string">、</span><span class="keyword">{age}</span><span class="string">歳です'</span>)
+<span class="comment"># → 私は山田、25歳です</span></code></pre>
+            <div class="highlight-box">
+                <p>💡 波括弧 <code class="code-inline">{}</code> の中に変数名を書くだけ！</p>
+            </div>
+        </div>
+
+        <!-- Slide 19: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>文字列操作を実際に試してみましょう</p>
+        </div>
+
+        <!-- Slide 20: Section 04 -->
+        <div class="slide section-slide">
+            <div class="section-number">04</div>
+            <h2>変数と型</h2>
+        </div>
+
+        <!-- Slide 21: 変数とは -->
+        <div class="slide">
+            <h2>変数とは</h2>
+            <p>データを入れておく「箱」です。<br>箱に名前を付けて、中にデータを保存します。</p>
+            <div class="variable-diagram">
+                <div class="var-box">
+                    <span class="label">name</span>
+                    <span class="value">'Mike'</span>
+                </div>
+                <div class="var-box">
+                    <span class="label">number</span>
+                    <span class="value">5</span>
+                </div>
+            </div>
+            <pre><code>name = <span class="string">'Mike'</span>    <span class="comment"># nameという箱にMikeを入れる</span>
+number = <span class="number">5</span>       <span class="comment"># numberという箱に5を入れる</span></code></pre>
+        </div>
+
+        <!-- Slide 22: 変数と文字列の違い -->
+        <div class="slide">
+            <h2>変数と文字列の違い</h2>
+            <pre><code>name = <span class="string">'Mike'</span>
+<span class="function">print</span>(name)    <span class="comment"># Mike（変数の中身）</span>
+<span class="function">print</span>(<span class="string">'name'</span>)  <span class="comment"># name（文字列そのまま）</span></code></pre>
+            <div class="highlight-box">
+                <p>⚠️ クォーテーションの有無で意味が変わる！</p>
+            </div>
+        </div>
+
+        <!-- Slide 23: 変数の更新 -->
+        <div class="slide">
+            <h2>変数の更新</h2>
+            <ul>
+                <li>後から値を上書きできる</li>
+                <li>自分自身を使った更新も可能</li>
+            </ul>
+            <pre><code>x = <span class="number">5</span>
+x = x + <span class="number">3</span>   <span class="comment"># xは8になる</span>
+x += <span class="number">3</span>      <span class="comment"># 省略形（同じ意味）→ xは11に</span></code></pre>
+        </div>
+
+        <!-- Slide 24: 変数を使うメリット -->
+        <div class="slide">
+            <h2>変数を使うメリット</h2>
+            <div class="two-column">
+                <div>
+                    <h3>1. 読みやすさ（可読性）</h3>
+                    <p>変数名で何のデータか分かる</p>
+                    <h3>2. 再利用しやすさ</h3>
+                    <p>1箇所変えれば全体に反映</p>
+                </div>
+                <div>
+                    <pre><code>banana_price = <span class="number">100</span>
+banana_count = <span class="number">3</span>
+total = banana_price * banana_count
+<span class="comment"># → 300</span></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25: 変数名のルール -->
+        <div class="slide">
+            <h2>変数名のルール</h2>
+            <table>
+                <tr>
+                    <th>分類</th>
+                    <th>例</th>
+                    <th>備考</th>
+                </tr>
+                <tr>
+                    <td style="color: #86efac;">✅ 良い</td>
+                    <td><code class="code-inline">user_name</code>, <code class="code-inline">total_price</code></td>
+                    <td>英単語、アンダースコア区切り</td>
+                </tr>
+                <tr>
+                    <td style="color: #fbbf24;">⚠️ 非推奨</td>
+                    <td><code class="code-inline">namae</code>, <code class="code-inline">名前</code></td>
+                    <td>ローマ字、日本語</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--red);">❌ エラー</td>
+                    <td><code class="code-inline">1name</code>, <code class="code-inline">if</code></td>
+                    <td>数字始まり、予約語</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Slide 26: データ型 -->
+        <div class="slide">
+            <h2>データ型</h2>
+            <div class="type-diagram">
+                <div class="type-card">
+                    <div class="type-name">int</div>
+                    <div class="type-desc">整数型</div>
+                    <div class="type-example">1, 100, -5</div>
+                </div>
+                <div class="type-card">
+                    <div class="type-name">float</div>
+                    <div class="type-desc">浮動小数点型</div>
+                    <div class="type-example">3.14, 0.5</div>
+                </div>
+                <div class="type-card">
+                    <div class="type-name">str</div>
+                    <div class="type-desc">文字列型</div>
+                    <div class="type-example">'Hello', "Python"</div>
+                </div>
+                <div class="type-card">
+                    <div class="type-name">bool</div>
+                    <div class="type-desc">ブール型</div>
+                    <div class="type-example">True, False</div>
+                </div>
+            </div>
+            <pre><code><span class="function">type</span>(<span class="number">100</span>)     <span class="comment"># &lt;class 'int'&gt;</span>
+<span class="function">type</span>(<span class="string">'Hello'</span>) <span class="comment"># &lt;class 'str'&gt;</span></code></pre>
+        </div>
+
+        <!-- Slide 27: 型による動作の違い -->
+        <div class="slide">
+            <h2>型による動作の違い</h2>
+            <pre><code><span class="number">5</span> <span class="operator">+</span> <span class="number">7</span>       <span class="comment"># 12（計算）</span>
+<span class="string">'5'</span> <span class="operator">+</span> <span class="string">'7'</span>   <span class="comment"># '57'（結合）</span></code></pre>
+            <div class="highlight-box">
+                <p>⚠️ 同じ <code class="code-inline">+</code> でも型によって動作が異なる！</p>
+            </div>
+        </div>
+
+        <!-- Slide 28: 型変換 -->
+        <div class="slide">
+            <h2>型変換</h2>
+            <ul>
+                <li><code class="code-inline">str()</code> → 文字列に変換</li>
+                <li><code class="code-inline">int()</code> → 整数に変換</li>
+                <li><code class="code-inline">float()</code> → 小数に変換</li>
+            </ul>
+            <pre><code>price = <span class="number">100</span>
+<span class="function">print</span>(<span class="string">'価格は'</span> + <span class="function">str</span>(price) + <span class="string">'円'</span>)
+
+<span class="comment"># f-stringsなら自動変換</span>
+<span class="function">print</span>(<span class="string">f'価格は</span><span class="keyword">{price}</span><span class="string">円'</span>)</code></pre>
+        </div>
+
+        <!-- Slide 29: Demo -->
+        <div class="slide demo-slide">
+            <div class="demo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <h2>コーディング実演</h2>
+            <p>変数と型を実際に操作してみましょう</p>
+        </div>
+
+        <!-- Slide 30: Summary -->
+        <div class="slide">
+            <h2>Part1 まとめ</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h4>print</h4>
+                    <p>文字を出力</p>
+                </div>
+                <div class="summary-item">
+                    <h4># コメント</h4>
+                    <p>説明を書く</p>
+                </div>
+                <div class="summary-item">
+                    <h4>数値</h4>
+                    <p>クォーテーション不要<br>四則演算できる</p>
+                </div>
+                <div class="summary-item">
+                    <h4>文字列</h4>
+                    <p>クォーテーションで囲む<br>メソッドで操作</p>
+                </div>
+                <div class="summary-item">
+                    <h4>変数</h4>
+                    <p>データを入れる箱</p>
+                </div>
+                <div class="summary-item">
+                    <h4>型</h4>
+                    <p>int, float, str, bool</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 31: Next Preview -->
+        <div class="slide title-slide">
+            <h1>次回予告</h1>
+            <p class="subtitle" style="font-size: 2rem; color: var(--white); margin-bottom: 2rem;">Part2: データ構造</p>
+            <div class="next-preview" style="text-align: left; max-width: 500px;">
+                <h3 style="margin-top: 0;">学習内容</h3>
+                <ul style="columns: 1;">
+                    <li>リスト</li>
+                    <li>辞書</li>
+                    <li>タプル</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">31</span>
+    </div>
+
+    <div class="nav">
+        <button id="prev">◀</button>
+        <button id="next">▶</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const currentSpan = document.getElementById('current');
+        const totalSpan = document.getElementById('total');
+        let currentSlide = 0;
+
+        totalSpan.textContent = slides.length;
+
+        function showSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= slides.length) index = slides.length - 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+            
+            // Update progress
+            const progressWidth = ((index + 1) / slides.length) * 100;
+            progress.style.width = progressWidth + '%';
+            
+            // Update counter
+            currentSpan.textContent = index + 1;
+        }
+
+        document.getElementById('prev').addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        // Touch navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    showSlide(currentSlide + 1);
+                } else {
+                    showSlide(currentSlide - 1);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
