@@ -244,6 +244,113 @@ message = """
 
 ---
 
+## 16. 型ヒント
+
+---
+
+### 型ヒントとは
+
+- 変数や関数の引数・戻り値の**型を明示**する機能
+- Python 3.5以降で導入
+- 最近の生成AIコードでよく見かける
+
+```python
+# 型ヒントなし
+def add(a, b):
+    return a + b
+
+# 型ヒントあり
+def add(a: int, b: int) -> int:
+    return a + b
+```
+
+---
+
+### 引数の型ヒント
+
+- 引数名の後に `:` と型名を書く
+
+```python
+def greet(name: str, age: int):
+    print(f'{name}さんは{age}歳です')
+```
+
+**name は str型、age は int型であることを示す**
+
+---
+
+### 戻り値の型ヒント
+
+- 括弧の後に `->` と型名を書く
+
+```python
+def add(a: int, b: int) -> int:
+    return a + b
+
+def say_hello(name: str) -> None:
+    print(f'こんにちは、{name}さん')
+```
+
+---
+
+### よく使う型
+
+| 型 | 意味 | 例 |
+|----|------|-----|
+| `int` | 整数 | `count: int = 0` |
+| `float` | 小数 | `price: float = 100.5` |
+| `str` | 文字列 | `name: str = 'Mike'` |
+| `bool` | 真偽値 | `flag: bool = True` |
+| `list` | リスト | `numbers: list` |
+| `dict` | 辞書 | `user: dict` |
+
+---
+
+### リストの中身の型
+
+```python
+# 整数のリスト
+def sum_numbers(numbers: list[int]) -> int:
+    return sum(numbers)
+
+# 辞書のキーと値の型
+def get_user(users: dict[str, int]) -> int:
+    ...
+```
+
+**`list[int]` = 整数のリスト**
+
+---
+
+### 型ヒントの注意点
+
+- 型ヒントは**強制ではない**
+- 間違った型を渡してもエラーにならない
+
+```python
+def add(a: int, b: int) -> int:
+    return a + b
+
+# 文字列を渡しても動く
+result = add('Hello', 'World')  # 'HelloWorld'
+```
+
+**プログラマーへのヒントであり、実行時チェックではない**
+
+---
+
+### 生成AIコードでの型ヒント
+
+- 最近のAI生成コードには型ヒントが多い
+- 読み方：「この引数にはこの型を渡してほしい」
+- 関数の使い方を理解するヒントになる
+
+---
+
+→ **コーディング実演**
+
+---
+
 ## Part5 まとめ
 
 - **関数**: 処理をまとめて名前を付けたもの
@@ -252,6 +359,7 @@ message = """
 - **return**: 値を返す（戻り値）
 - **デフォルト引数**: 省略可能な引数
 - **Docstring**: 関数の説明文
+- **型ヒント**: 引数・戻り値の型を明示
 
 ---
 

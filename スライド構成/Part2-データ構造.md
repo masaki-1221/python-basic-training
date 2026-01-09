@@ -245,6 +245,82 @@ for key, value in user.items():
 
 ---
 
+## 08. 集合型（set）
+
+---
+
+### 集合型とは
+
+- **重複のない要素の集まり**
+- 波括弧 `{}` で囲む（辞書と似ているがキー:値がない）
+- 同じ値は1つだけ
+
+```python
+fruits = {'apple', 'banana', 'apple', 'orange'}
+# → {'apple', 'banana', 'orange'}（重複が除かれる）
+```
+
+---
+
+### 集合型の作成
+
+```python
+# 直接作成
+colors = {'red', 'green', 'blue'}
+
+# リストから作成（重複削除）
+my_list = [1, 2, 2, 3, 3, 3]
+unique = set(my_list)  # {1, 2, 3}
+
+# 空の集合（注意！）
+empty_set = set()   # 正しい
+empty_dict = {}     # これは辞書になる
+```
+
+---
+
+### 集合演算
+
+| 演算 | 記号 | 意味 |
+|------|------|------|
+| 和集合 | `\|` | どちらかに含まれる |
+| 積集合 | `&` | 両方に共通 |
+| 差集合 | `-` | 一方にだけ含まれる |
+
+```python
+a = {1, 2, 3}
+b = {3, 4, 5}
+
+a | b  # {1, 2, 3, 4, 5}
+a & b  # {3}
+a - b  # {1, 2}
+```
+
+---
+
+### 集合型の使いどころ
+
+1. **リストの重複を削除**
+
+```python
+purchases = ['apple', 'banana', 'apple']
+unique_fruits = set(purchases)  # {'apple', 'banana'}
+```
+
+2. **共通要素を見つける**
+
+```python
+my_friends = {'Alice', 'Bob', 'Charlie'}
+your_friends = {'Bob', 'David'}
+common = my_friends & your_friends  # {'Bob'}
+```
+
+---
+
+→ **コーディング実演**
+
+---
+
 ## Part2 まとめ
 
 | データ構造 | 書き方 | 特徴 |
@@ -252,6 +328,7 @@ for key, value in user.items():
 | リスト | `[要素, 要素]` | 順番あり、変更可能 |
 | 辞書 | `{キー: 値}` | キーでアクセス |
 | タプル | `(要素, 要素)` | 変更不可 |
+| 集合 | `{要素, 要素}` | 重複なし |
 
 ---
 
