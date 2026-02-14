@@ -30,6 +30,19 @@ mixed = ['apple', 100, True, 3.14]
 
 ---
 
+### 文字列からリストを作る（split）
+
+- 文字列を区切り文字で分割してリストにする
+- Part1で学んだ文字列とリストの橋渡し
+
+```python
+text = 'apple,banana,orange'
+fruits = text.split(',')
+# → ['apple', 'banana', 'orange']
+```
+
+---
+
 ### インデックスとスライス
 
 - 文字列と同じ仕組み

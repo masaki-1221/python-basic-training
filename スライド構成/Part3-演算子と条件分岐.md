@@ -268,6 +268,34 @@ if age >= 18:
 
 ---
 
+### 文字列メソッドを使った条件分岐
+
+- 文字列には条件分岐で使える便利なメソッドがある
+
+| メソッド | 機能 | 例 |
+|----------|------|-----|
+| `.startswith()` | 指定文字で始まるか | `'report.pdf'.startswith('report')` → `True` |
+| `.endswith()` | 指定文字で終わるか | `'report.pdf'.endswith('.pdf')` → `True` |
+| `.find()` | 文字列の位置を検索 | `'Hello'.find('ll')` → `2` |
+| `.count()` | 出現回数を数える | `'banana'.count('a')` → `3` |
+
+---
+
+### 文字列メソッドの活用例
+
+```python
+filename = 'report.pdf'
+
+if filename.endswith('.pdf'):
+    print('PDFファイルです')
+elif filename.endswith('.xlsx'):
+    print('Excelファイルです')
+```
+
+**生成AIのコードでも頻繁に使われるパターン！**
+
+---
+
 → **コーディング実演**
 
 ---
@@ -281,6 +309,7 @@ if age >= 18:
 | 論理演算子 | `and`（かつ）, `or`（または） |
 | None | 「何もない」を表す。`is` で判定 |
 | if文 | 条件によって処理を変える |
+| 文字列メソッド | `startswith`, `endswith` 等を条件分岐で活用 |
 
 ---
 
